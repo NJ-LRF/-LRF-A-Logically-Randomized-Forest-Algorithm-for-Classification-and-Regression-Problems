@@ -1,0 +1,38 @@
+Input : Feature vector Fn
+Output: Number of DTs in the forest
+• Step 1: Compute the set of relevant features (Rm).
+– 1.1: Compute the FCV by using correlation (Eq. 1) and covariance (Eq. 2) for each feature (Fn).
+– 1.2: Threshold value α is calculating by using (Eq. 3).
+– 1.3: for each (Fn), n = 1 to n do
+if FCV ≥ α
+FCV ←1
+else
+FCV ←0
+/* FCM is the result of this.*/
+– 1.4: Find out minimal vertex cover using Dharwadker’s vertex cover algorithm (Dharwadker, 2006).
+– 1.5: Identify the relevant features (Rm), that belong to the vertex cover.
+• Step 2: Compute the ‘informativeness value’ (β) of each Rm.
+– 2.1: for each Rm, m = 1 to m do
+calculate β using algorithm 2
+– 2.2: Normalize the calculated β value for each Rm by using Eq. 4.
+– 2.3: Sort the set of relevant features based on θi values in descending order.
+– 2.4: Specify a threshold (γ) and divide Rm into two disjoint sets by using Eqs. 5 and 6 so that:
+Rm = MIp ∪ Iq, MIp ∩ Iq = Φ
+• Step 3: Select the features for sub-space (Fk).
+– 3.1: First, select the features from the most-informative set (MIp) such that, Fk ×
+MIp
+Rm
+.
+– 3.2: Next, select the features from the informative set Iq such that Fk − Fk−MI .
+• Step 4: Select the splitting node from the sub-space (Fk).
+– 4.1: Choose one of the features at random (say, Fi). The selection is made with identical probability ( 1
+i ), which does not depend on the
+individual’s importance value.
+– 4.2: With probability βi
+βimax
+where βimax = max {βi}k
+i=1 when the maximal importance value in the features, the selection is accepted.
+Alternatively, the process is replicated from the previous step (i.e. another selection attempt is made in the case of refusal).
+– Repeat Steps 4.1 and 4.2 to construct the DT until it reaches (k = 1) to split.
+• Step 5: Repeat Steps 3 and 4 for the required number of times (100 to 500) to build a forest of DT. Finally, integrating all DTs into an LRF,
+and this LRF uses majority voting or averaging to achieve classification or regression findings, respectively.
