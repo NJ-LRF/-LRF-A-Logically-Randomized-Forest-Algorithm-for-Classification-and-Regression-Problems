@@ -1,0 +1,27 @@
+from math import pi, sin, cos
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
+from src.extratrees import (ExtraTree, ExtraForest)
+
+
+def colorize_class(cls):
+    """ Map 0..1 to (1, 0, 0)..(0, 0, 1) """
+    return (cls, 0, 1-cls)
+
+
+
+data = wine_dataset()
+
+# Train tree
+tree = ExtraTree(n_min=5)
+tree.fit(data)
+
+# Train forest
+forest = ExtraForest(n_trees=10, n_min=5)
+forest.fit(data)
+
+# Predict
+pred_tree = tree.predict(data[0])
+pred_forest = forest.predict(data[0])
+
