@@ -1,0 +1,13 @@
+X_train=np.asarray(X_train)
+X_test=np.asarray(X_test)
+Y_train=np.asarray(Y_train)
+Y_test=np.asarray(Y_test)
+
+# BEGIN: FEATURE SELECTION WITH PERMUTATION IMPORTANCE METHOD
+#http://eli5.readthedocs.io/en/latest/blackbox/permutation_importance.html
+sel = SelectFromModel(PermutationImportance(RandomForestClassifier(), cv=5),threshold=0.005,).fit(X_train, Y_train)
+X_train2 = sel.transform(X_train)
+X_test2 = sel.transform(X_test)
+# END: FEATURE SELECTION WITH PERMUTATION IMPORTANCE METHOD
+
+runRandomForest(X_train2, Y_train, X_test2, Y_test)
