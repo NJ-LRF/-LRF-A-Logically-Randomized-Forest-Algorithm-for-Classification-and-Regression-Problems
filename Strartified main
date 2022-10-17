@@ -1,4 +1,4 @@
-# the functions:
+
 def stratified_sample(df, strata, size=None, seed=None, keep_index= True):
 population = len(df)
     size = __smpl_size(population, size)
@@ -7,8 +7,7 @@ population = len(df)
     tmp_grpd = tmp.groupby(strata).count().reset_index()
     tmp_grpd['samp_size'] = round(size/population * tmp_grpd['size']).astype(int)
 
-    # controlling variable to create the dataframe or append to it
-    first = True 
+     first = True 
     for i in range(len(tmp_grpd)):
         # query generator for each iteration
         qry=''
@@ -23,8 +22,7 @@ population = len(df)
                 qry = qry + stratum + ' == ' + str(value) +' & '
             else:
                 qry = qry + stratum + ' == ' + str(value)
-        
-        # final dataframe
+       
         if first:
             stratified_df = df.query(qry).sample(n=n, random_state=seed).reset_index(drop=(not keep_index))
             first = False
