@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-# Install the latest version of Tensorflow
+
 !pip install -q -U tensorflow==1.7.0
 
 import itertools
@@ -45,7 +45,7 @@ to_remove = value_counts[value_counts <= variety_threshold].index
 data.replace(to_remove, np.nan, inplace=True)
 data = data[pd.notnull(data['variety'])]
 
-# Split data into train and test
+
 train_size = int(len(data) * .8)
 print ("Train size: %d" % train_size)
 print ("Test size: %d" % (len(data) - train_size))
@@ -64,7 +64,7 @@ variety_test = data['variety'][train_size:]
 # Test labels
 labels_test = data['price'][train_size:]
 
-# Create a tokenizer to preprocess our text description
+
 vocab_size = 12000 # This is a hyperparameter, experiments with different values of your dataset
 tokensize = keras.preprocessing.text.Tokenizer(num_words=vocab_size, char_level = False)
 tokensize.fit_on_texts(description_train) # only fit on train
@@ -73,7 +73,7 @@ tokensize.fit_on_texts(description_train) # only fit on train
 description_bow_train = tokensize.texts_to_matrix(description_train)
 description_bow_test = tokensize.texts_to_matrix(description_test)
 
-# Wide features 2: one-hot vector of variety categories
+
 
 #Use sklern utility to convert label string to numbered index
 encoder = LabelEncoder()
@@ -82,7 +82,7 @@ variety_train = encoder.transform(variety_train)
 variety_test = encoder.transform(variety_test)
 num_classes = np.max(variety_train) + 1
 
-# Convert labels to one hot
+
 variety_train = keras.utils.to_categorical(variety_train, num_classes)
 variety_test = keras.utils.to_categorical(variety_test, num_classes)
 
@@ -97,7 +97,7 @@ wide_model = keras.Model(inputs=[bow_inputs, variety_inputs], outputs=prediction
 wide_model.compile(loss='mse', optimizer= 'adam', metrics=['accuracy'])
 print(wide_model.summary())
 
-# Deep Model features: word embedding of wine descriptions
+
 train_embed = tokensize.texts_to_sequences(description_train)
 test_embed = tokensize.texts_to_sequences(description_test)
 
@@ -105,7 +105,7 @@ max_seq_length = 170
 train_embed = keras.preprocessing.sequence.pad_sequences(train_embed, maxlen=max_seq_length, padding="post")
 test_embed = keras.preprocessing.sequence.pad_sequences(test_embed, maxlen=max_seq_length, padding="post")
 
-# Define our deep model with the Functional API
+
 deep_inputs = layers.Input(shape=(max_seq_length,))
 embedding = layers.Embedding(vocab_size, 8, input_length=max_seq_length)(deep_inputs)
 embedding = layers.Flatten()(embedding)
@@ -117,7 +117,7 @@ deep_model.compile(loss='mse',
                    optimizer = 'adam',
                    mertrics=['accuracy'])
 
-# Combine wide and deep into one model
+
 merged_out = layers.concatenate([wide_model.output, deep_model.output])
 merged_out = layers.Dense(1)(merged_out)
 combined_model = keras.Model(wide_model.input + [deep_model.input], merged_out)
@@ -135,7 +135,7 @@ combined_model.evaluate([description_bow_test, variety_test] + [test_embed], lab
 # generate predictions
 predictions = combined_model.predict([description_bow_test, variety_test] + [test_embed])
 
-# Compare prediction with actual values for the first few items in our test dataset
+
 num_predictions = 40
 diff = 0
 
