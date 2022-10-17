@@ -23,4 +23,4 @@ forest.fit(data)
 
 # Predict
 pred_tree = tree.predict(data[0])
-pred_forest = forest.predict(data[0])
+pred_forest = forest.predict(data[0]
