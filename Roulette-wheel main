@@ -1,7 +1,5 @@
 import sys, time, numpy, random
 
-# Individual has a genome and fitness and knows how to print itself
-class Individual:
     def __init__(self, genome):
         if genome is None:
             self.genome = numpy.array(numpy.random.random_integers(0, 1, LEN), dtype='bool')
@@ -11,7 +9,6 @@ class Individual:
     def __str__(self):
         return "".join(str(int(i)) for i in self.genome)
         
-# Uniform crossover
 def xover(a, b):
     g, h = a.genome.copy(), b.genome.copy()
     for pt in range(len(g)):
@@ -19,7 +16,6 @@ def xover(a, b):
             g[pt], h[pt] = h[pt], g[pt]
     return (Individual(g), Individual(h))
 
-# Per-gene bit-flip mutation
 def mutate(a):
     g = a.genome.copy()
     for pt in range(len(g)):
@@ -27,14 +23,11 @@ def mutate(a):
             g[pt] = not g[pt]
     return Individual(g)
 
-# Print statistics, and return True if we have succeeded already.
 def stats(pop, gen):
     best = max(pop, key=lambda x: x.fitness)
     print("{0} {1:.2f} {2} {3}".format(gen, numpy.mean([i.fitness for i in pop]), best.fitness, str(best)))
     return (best.fitness >= SUCCESS_THRESHOLD)
 
-# Roulette-wheel (fitness-proportionate) selection. Tricky but fast.
-# http://stackoverflow.com/questions/2140787/select-random-k-elements-from-a-list-whose-elements-have-weights
 def roulette(items, n):
     total = float(sum(w.fitness for w in items))
     i = 0
@@ -49,14 +42,11 @@ def roulette(items, n):
         w -= x
         yield v
         n -= 1
-
-# Use many tournaments to get parents
 def tournament(items, n, tsize=5):
     for i in range(n):
         candidates = random.sample(items, tsize)
         yield max(candidates, key=lambda x: x.fitness)
 
-# Run one generation
 def step(pop):
     newpop = []
     parents = SELECTION(pop, len(pop) + 1) # one extra for final xover    
@@ -82,7 +72,6 @@ def main():
             sys.exit()
     print("Failure")
 
-# parameters
 GENERATIONS, POPSIZE, LEN, CROSSOVER_PROB, PMUT = (100, 100, 100, 0.5, 0.1)
 FITNESS, SUCCESS_THRESHOLD = (numpy.sum, LEN)
 SELECTION = roulette # roulette sucks: tournament is better
